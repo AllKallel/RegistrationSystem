@@ -1,157 +1,148 @@
-// Define o pacote ao qual esta classe pertence. Isso é Útil
-// para a organização do código em projetos maiores. 
+/* Define o pacote ao qual esta clásse pertence. Isso é útil
+ * para a organização do código em projetos maiores. */
 package Registration;
 
-// Importa a interface MongoClient do Driver do MongoDB, usada
-// para estabelecer a conexão com o banco de dados.
+/* Importa a interface MongoClient do Driver do MongoDB, usada
+ * para estabelecer a conexão com o banco de dados. */
 import com.mongodb.client.MongoClient;
 
-// Importa a interface MongoClients que possui métodos estáticos
-// para criar instâncias de MongoClient.
+/* Importa a interface MongoClients que possui métodos estáticos
+ * para criar instâncias de MongoClient. */
 import com.mongodb.client.MongoClients;
 
-//	Importa a interface MongoCollection que representa uma coleção
-// (equivalente a uma tabela) dentro de um banco de dados MongoDB;
+/* Importa a interface MongoCollection que representa uma coleção
+ * (equivalente a uma tabela) dentro de um banco de dados MongoDB. */
 import com.mongodb.client.MongoCollection;
 
-//	Importa a interface MongoDatabase que representa o próprio banco de dados mongoDB.
+/* Importa a interface MongoDatabase que representa o próprio banco de dados mongoDB. */
 import com.mongodb.client.MongoDatabase;
 
-//	Importa a classe Document do BSON, que é usada para criar objetos que
-//	representam documentos (registros) no MongoDB.
-//	Um documento é similar a um Map<String, Object>, onde você pode
-// 	armazenar chaves-valor
+/* Importa a classe Document do BSON, que é usada para criar objetos que
+ * representam documentos (registros) no MongoDB.
+ * Um documento é similar a um Map<String, Object>, onde você pode armazenar chaves-valor. */
 import org.bson.Document;
 
-//  Importa a classe ObjectId do BSON, que representa o identificador único (_id)
-//  padrão gerado automaticamento pelo MongoDB para cada documento.
-import org.bson.types.ObjectId;
+/* Importa a classe ObjectId do BSON, que representa o identificador único (_id)
+ * padrão gerado automaticamento pelo MongoDB para cada documento.
+ * import org.bson.types.ObjectId; */
 
-//  Importa a biblioteca Swing do Java, que é usada para constrio interfaces gráficas (GUI).
-//  Aqui importa todas os componentes básicos do Swing como: JFrame, JButton, JTextFild, JLabel etc).
+/* Importa a biblioteca Swing do Java, que é usada para construir interfaces gráficas (GUI).
+ * Aqui importa todas os componentes básicos do Swing como: JFrame, JButton, JTextFild, JLabel etc).*/
 import javax.swing.*;
 
 //	Importa o modelo da tabela padrão do Swing (DefaultRableModel), usado para 
-//  Manipular os dados exibidos em uma JTabled
+//  Manipular os dados exibidos em uma JTabled. /*
 import javax.swing.table.DefaultTableModel;
 
 //  Importa a biblioteca AWT (Abstract Window Toolkit) usado aqui para gerenciar layouts, tamanho,
-//  posicionamento e estilo visual dos componentes GUI. 
+//  posicionamento e estilo visual dos componentes GUI. /*
 import java.awt.*;
 
 //	importa a classe File, usada para representar e manipular arquivos no sistema de arquivos (Leitura
-//  e escrita).
+//  e escrita). /*
 import java.io.File;
 
-//  Importa a classe PrintWriter que permite escrever texto em arquivos de forma mais simples.
+//  Importa a classe PrintWriter que permite escrever texto em arquivos de forma mais simples. /*
 import java.io.PrintWriter;
 
 //  Importa a ArrayList, uma implementação de lista dinâmica que permite armazenar e acessar elementos
-//  em ordem. 
+//  em ordem. /*
 import java.util.ArrayList;
 
-// Importa a interface List, que define uma lista ordenada de elementos e é a superclasse de ArrayList.
+// Importa a interface List, que define uma lista ordenada de elementos e é a superclasse de ArrayList. */
 import java.util.List;
 
 public class RegistrationMongoApp extends JFrame {
 
 	// Declaração de um campo de texto para inserir o nome do usuário
 	// JTextField é um componente Swing que permite a entrada de texto de linha
-	// única.
+	// única. /*
 	private JTextField txtNome;
 
-	// Campo de texto para inserir o email do usuário.
+	// Campo de texto para inserir o email do usuário. */
 	private JTextField txtEmail;
 
-	// Campo de texto para inserir o telefone do usuário.
+	// Campo de texto para inserir o telefone do usuário. */
 	private JTextField txtTelefone;
 
-	// Campo de Texto para inserir a data de nascimento do usuário.
+	// Campo de Texto para inserir a data de nascimento do usuário. */
 	private JTextField txtDataNascimento;
 
-	// Campo de texto para digitar um termo de busca.
+	// Campo de texto para digitar um termo de busca. */
 	private JTextField txtPesquisa;
 
-	// Botão para limpar um campo de formuário. Usado para iniciar um novo cadastro.
+	// Botão para limpar um campo de formuário. Usado para iniciar um novo cadastro. */
 	private JButton btnNovo;
 
-	// Botão para salvar um novo registro no banco de dados.
+	// Botão para salvar um novo registro no banco de dados. */
 	private JButton btnSalvar;
 
 	// Botão para atualizar os dados de registro existênte.
-	// Inicialmente desativado. Só é ativado ao selecionar um registro.
+	// Inicialmente desativado. Só é ativado ao selecionar um registro. */
 	private JButton Btnatualizar;
 
-	// Botão que ativa a busca de acordo com termo digirado em TxtPesquisa.
+	// Botão que ativa a busca de acordo com termo digirado em TxtPesquisa. */
 	private JButton btnPesquisar;
 
 	// Botão para excluir um registro selecionado. Também é ativado apenas
-	// quando há um item selecionado na tabela.
+	// quando há um item selecionado na tabela. */
 	private JButton btnExcluir;
 
 	// Componente da tabela que exibirá os reistros existêntes do banco de dados
-	// na interface gráfica.
+	// na interface gráfica. */
 	private JTable tabela;
 
 	// Modelo de dados da tabela. O DefaultTableModel permite manipular o conteúdo
-	// exibido na Jtable. Ele define as colunas e linhas que a tabela irá exibir.
+	// exibido na Jtable. Ele define as colunas e linhas que a tabela irá exibir. */
 	private DefaultTableModel modeloTabela;
 
 	// Objeto responsável por manter a conexão ativa com o MongoDB.
 	// A interface MongoClient representa a conexão do cliente com o servidor do
-	// mongoDB.
+	// mongoDB. */
 	private MongoClient mongoClient;
 
 	// Representa o banco de dados dentro do servidor MongoDB. Por exemplo
-	// o banco chamado "cadastro".
+	// o banco chamado "cadastro". */
 	private MongoDatabase database;
 
 	// Representa uma coleção (semelhante a uma tabela em bancos relacionais) dentro
 	// do banco. Aqui será usado para armazenar os registros de pessoas. (nome, email,
-	// telefone, etc).
+	// telefone, etc). */
 	private MongoCollection<Document> colecao;
 
 	private JButton btnAtualizar;
 
 	public RegistrationMongoApp() {
 
-		// Chama o construtor da superclasse JFrame (Janela Grafica do Swing), passando
-		// como argumento
-		// o título da janela. Isso define o texto que parece na barra de título da
-		// janela principal.
+		/*Chama o construtor da superclasse JFrame (Janela Grafica do Swing), passando como argumento 
+		 * o título da janela. Isso define o texto que parece na barra de título da janela principal. */
 		super("Cadastro com MongoDB");
 
-		// Define o comportamento padrão ao fechar a janela. Neste caso, EXIT_ON_CLOSE
-		// fecha completamente
-		// o programa (Fecha a aplicação java) ao clicar no "X". Isso é importânte para
-		// evitar que o
-		// processo continue rodando em segundo plano após fechar a janela.
+		/* Define o comportamento padrão ao fechar a janela. Neste caso, EXIT_ON_CLOSE fecha completamente
+		 * o programa (Fecha a aplicação java) ao clicar no "X". Isso é importânte para evitar que o 
+		 * processo continue rodando em segundo plano após fechar a janela. */
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		// Define o tamanho da janela principal da aplicação: 800 pixels de largura e
-		// 600 de altura.
-		// Esses valores são definidos manualmente para garantir que todos os
-		// componentes caibam
-		// confortavelmente na tela.
+		/* Define o tamanho da janela principal da aplicação: 800 pixels de largura e 600 de altura.
+		 * Esses valores são definidos manualmente para garantir que todos os componentes caibam
+		 * confortavelmente na tela. */
 		setSize(800, 600);
 
-		// Centraliza a janela na tela, independentemente da resolução do monitor. O
-		// Argumento "null"
-		// faz com que a tela apareça no centro da tela do usuário.
-		// Isso melhora a experiência ao abrir a aplicação.
+		/* Centraliza a janela na tela, independentemente da resolução do monitor. O argumento "null"faz com
+		 * que a tela apareça no centro da tela do usuário. Isso melhora a experiência ao abrir a aplicação. */
 		setLocationRelativeTo(null);
 
-		// Chamada do metodo ToConectMongo() responsável por:
-		// -Criar uma conexão com o banco de dados mongoDB local (localhost:27017),
-		// -Selecionar o banco de dados cadastros,
-		// -Selecionar a coleção 'Pessoas'.
-		// Esse método prepara a aplicação para trabalhar com o banco de dados.
+		/* Chamada do metodo ToConectMongo() responsável por:
+		 * -Criar uma conexão com o banco de dados mongoDB local (localhost:27017),
+		 * -Selecionar o banco de dados cadastros,
+		 * -Selecionar a coleção 'Pessoas'
+		 * Esse método prepara a aplicação para trabalhar com o banco de dados. */
 		conectarMongo();
 
-		/**Chama o método criarInterface(), que responsável por: - Criar e organizar os
+		/* Chama o método criarInterface(), que responsável por: - Criar e organizar os
 		 * componentes visuais (campos, botôes, tabelas, etc), - Definir os layouts dos
 		 * painéis (com Gridlayout, borderLayout, etc), - associar os botões às suas
-		 * funcionalidades usando ActioListeners, - Adicionar os elementos visuais ao JFrame*/
+		 * funcionalidades usando ActioListeners, - Adicionar os elementos visuais ao JFrame */
 		criarInterface();
 
 		/* Chama o método carregarRegistros("") para exibir os dados da coleção na
@@ -440,66 +431,70 @@ public class RegistrationMongoApp extends JFrame {
 		 * A Expressão lambda define duas ações que devem ocorrer quando o botão for clicado.*/
 		btnNovo.addActionListener(e -> {
 			
-			/*O método limparCampos() apaga o conteúdo de todos os campos de entrada:
-			 * txtNome, TxtEmail, txtTelefone, TxtDataNascimento, deixando-os em branco. */
+			/*	O método limparCampos() apaga o conteúdo de todos os campos de entrada:
+				txtNome, TxtEmail, txtTelefone, TxtDataNascimento, deixando-os em branco. 	*/
 			limparCampos();
 			
-			/* O metodo clearSelection() da JTable remove qualquer seleção de linha feita na tabela*.
-			 * Isso garante que,  ao limpar o formulário, nenhuma linha foque selecionada, o que também
-			 * desativa os botões Atualizar e Exluir. */
+			/* 	O metodo clearSelection() da JTable remove qualquer seleção de linha feita na tabela.
+				Isso garante que,  ao limpar o formulário, nenhuma linha fique selecionada, o que também
+				desativa os botões Atualizar e Exluir. 	*/
 			tabela.clearSelection();
 		});
 		
-		/* Adiciona um ouvinte de ação ao bobtão btnPesquisar. Esse ouvinte será executado sempre que o 
-		 * botão for clicado.*/
+		/*	Adiciona um ouvinte de ação ao bobtão btnPesquisar. Esse ouvinte será executado sempre que o 
+			botão for clicado.	*/
 		btnPesquisar.addActionListener(e -> {
 			
-			/* txtpesquisa é o campo onde o usuário digita o termo da busca.
-			 * O método getText() recupera o texto digitado no campo. O metodo trim() remove espaços 
-			 * em branco no inicio e fim da string, garantindo que a busca seja feita de forma limpa */
+			/*	txtpesquisa é o campo onde o usuário digita o termo da busca.
+				O método getText() recupera o texto digitado no campo. O metodo trim() remove espaços 
+				em branco no inicio e fim da string, garantindo que a busca seja feita de forma limpa 	*/
 			String termo = txtPesquisa.getText().trim();
 			
-			/* Chama o método carregarRegistros() passando como argumento o termo digitado.
-			 * Esse método atualiza a tabela, exibindo apenas os registros que comtenham o 
-			 * termo no nome ou no email. */
+			/* 	Chama o método carregarRegistros() passando como argumento o termo digitado.
+				Esse método atualiza a tabela, exibindo apenas os registros que comtenham o 
+				termo no nome ou no email. 	*/
 			carregarRegistros(termo);
 		});
 		
-		/* adiciona um ouvinte de ação ao botão "btnAtualizar". Ao clicar no botão "Atualizar", o método
-		 * AtualizarRegistro() será chamado. Esse método recupera os dados dos campos e atualiza o 
-		 * documento correspondente no MongoDB. */
+		/* 	adiciona um ouvinte de ação ao botão "btnAtualizar". Ao clicar no botão "Atualizar", o método
+			AtualizarRegistro() será chamado. Esse método recupera os dados dos campos e atualiza o 
+		 	documento correspondente no MongoDB. 	*/
 		btnAtualizar.addActionListener(e -> atualizarRegistro());
 		
-		/* Adiciona um ouvinte de ação ao botão "btnExcluir". Ao clicar no botão "Excluir" o método
-		 * excluirRegistros() será chamado. Esse método remove o documento selecionado no MongoDB após
-		 * confirmação do usuário. */
+		/* 	Adiciona um ouvinte de ação ao botão "btnExcluir". Ao clicar no botão "Excluir" o método
+			excluirRegistros() será chamado. Esse método remove o documento selecionado no MongoDB após
+			confirmação do usuário.		*/
 		btnExcluir.addActionListener(e -> excluirRegistro());
 		
-		/* Adiciona um ouvinte de ação ao botão btnExportar. Ao clicar no botão "Exportar Excel", o
-		 * método exportarDadosExcel() é chamado. Esse método exporta os dados da tabela para um
-		 * arquivo CSV que pode ser aberto no Excel */
+		/* 	Adiciona um ouvinte de ação ao botão btnExportar. Ao clicar no botão "Exportar Excel", o
+		 	método exportarDadosExcel() é chamado. Esse método exporta os dados da tabela para um
+		 	arquivo CSV que pode ser aberto no Excel. 	*/
 		btnExportar.addActionListener(e -> exportarDadosExcel());
 		
-		/* Adiciona um ouvinte de seleção de linha na tabela. 
-		 * O método getSelectionModel() retorna o modelo se seleção da JTable, responsável por monitorar
-		 * quais linhas estão selecionadas.
-		 * O métdodo, addListSelectionListener() adiciona um listener que será executado sempre que um 
-		 * usuário clicar ou mudar a seleção de linha. */
+		/* 	Adiciona um ouvinte de seleção de linha na tabela. 
+		 	O método getSelectionModel() retorna o modelo se seleção da JTable, responsável por monitorar
+		 	quais linhas estão selecionadas.
+		 	O métdodo, addListSelectionListener() adiciona um listener que será executado sempre que um 
+		 	usuário clicar ou mudar a seleção de linha. 	*/
 		tabela.getSelectionModel().addListSelectionListener(e -> {
-			/* Verifica se o evento ainda está em fase de "ajuste". Quando o usuário ainda está arrastando ou
-			 * navegando com o teclado, o evento pode ser disparado multiplas vezes. 
-			 * Essa verificação com !e.getValueIsAdjusting() garante que o código só será executado após o 
-			 * ajuste final, ou seja, quando a seleção realmente for concluída.*/
+			
+			/* 	Verifica se o evento ainda está em fase de "ajuste". Quando o usuário ainda está arrastando ou
+			 	navegando com o teclado, o evento pode ser disparado multiplas vezes. 
+			 	Essa verificação com !e.getValueIsAdjusting() garante que o código só será executado após o 
+			 	ajuste final, ou seja, quando a seleção realmente for concluída.	*/
 			if (!e.getValueIsAdjusting()) {
-				/* O btem o indice da linha atualmente selecionada na tabela, que começa com 0 para a primeira
-				 * linha e 1 para a segunda e assim por diante. Caso nenhuma linha seja selecionada, o valor
-				 * retornado será -1. */
+				
+				/* 	O btem o indice da linha atualmente selecionada na tabela, que começa com 0 para a primeira
+				 	linha e 1 para a segunda e assim por diante. Caso nenhuma linha seja selecionada, o valor
+				 	retornado será -1. 	*/
 				int linha = tabela.getSelectedRow();
-				/* Verifica se uma linha válida está selecionada (indice maior ou igual a 0). Isso é necessário
-				 * para evitar erros ao tentar acessar uma linha inexistênte.*/
+				
+				/* 	Verifica se uma linha válida está selecionada (indice maior ou igual a 0). Isso é necessário
+					para evitar erros ao tentar acessar uma linha inexistênte.	*/
 				if (linha >= 0) {
-					/* Preenche o campo de texto txtNome com o valor da coluna "Nome" da linha selecionada.
-					 * getValueAt(linha, a): a linha selecionada e a coluna 1( segunda coluna, que é "Nome") */
+					
+					/* 	Preenche o campo de texto txtNome com o valor da coluna "Nome" da linha selecionada.
+					 	getValueAt(linha, a): a linha selecionada e a coluna 1( segunda coluna, que é "Nome")	*/
 					txtNome.setText((String) modeloTabela.getValueAt(linha, 1));
 					
 					txtEmail.setText((String) modeloTabela.getValueAt(linha, 2));
@@ -513,9 +508,9 @@ public class RegistrationMongoApp extends JFrame {
 					btnExcluir.setEnabled(true);
 					
 				} else {
-					/* Caso nenhuma linha esteja selecionada, (linha == -1), os botões "Atualizar" e "Excluir"
-					 * são desativados. Isso previne que o usuário clique nesses botões sem que haja um 
-					 * registro válido selecionado. */
+					/* 	Caso nenhuma linha esteja selecionada, (linha == -1), os botões "Atualizar" e "Excluir"
+					 	são desativados. Isso previne que o usuário clique nesses botões sem que haja um 
+					 	registro válido selecionado. 	*/
 					btnAtualizar.setEnabled(false);
 					
 					btnExcluir.setEnabled(false);
@@ -533,48 +528,122 @@ public class RegistrationMongoApp extends JFrame {
 
 	};
 	
+	/*	Declaração do método salvarRegistro() com o escopo private. 
+		Esse método é chamado quando o botão "Salvar" é clicado e tem 
+		como objetivo capturar os dados do formulário, validar e inseri-los 
+		no banco de dados MongoDB. 																	*/
 	private void salvarRegistro() {
-		txtNome.setText("");
+		
+		/*	Recupera o texto digitado no campo txtNome.
+			O método getText() obtém o conteúdo do campo de texto.
+			O método trim() remove espaços em branco no começo e no fim da String, garantindo
+			que nomes como " João " sejam carregados como "joão". 	*/
+		String nome = txtNome.getText().trim();
+		
+		/*	Recupera o texto digitado no campo txtEmail.											*/
+		String email = txtEmail.getText().trim();
+		
+		/*	Recupera o texto digitado no campo ttxtTelefone.										*/
+		String tel = txtTelefone.getText().trim();
+		
+		/*	Recupera o texto digitado no campo txtDataNascimento.									*/
+		String data = txtDataNascimento.getText().trim();
+		
+		/*	Verifica se os campos nome e email estão vazios. O método isEmpty() retorna true se a
+		 	String estiver vazia (""). Como nome e email são campos obrigatórios, isso impede que 
+		 	um registro com essas informações seja salvo no banco de dados.		 					*/
+		if (nome.isEmpty() || email.isEmpty()){
+			
+			/*	Exibe uma caixa de diálogo com a mensagem de aviso.
+			 	JOptionPane é uma caixa utilitária do Swing que exibe janelas de mensagem.
+			 	showMessageDialog(...) exibe um alerta com título, conteúdo e ícone de tipo.
+			 	Nesse caso, o ícone WARNING_MESSAGE indica que pe um aviso. 						*/
+			JOptionPane.showMessageDialog(this,
+					"Nome e Email são obrigatórios!", //Mensagem de erro exibida ao usuário.
+					"Aviso",						  //Título da caixa de diálogo.
+					JOptionPane.WARNING_MESSAGE);	  //Tipo de ícone: Aviso (ícone amarelo com).
+			
+			
+			/*	Return encerra a execução do método, impedindo que o registro seja salvo 
+				com campos inválidos.											 					*/
+			return;
+		};
+		
+		/* 	Cria um novo objeto do tipo Document, que representa um documento no formato 
+		 	BSON (estrutura interna do MongoDB).
+		 	Esse objeto será inserido diretamente na coleção do mongoDB como um novo resistro.
+		 	O primeiro par chave-valor inserido é: "Nome" nome 
+		 	(conteúdo digitado no campo txtNome).	 	 											*/
+		Document doc = new Document("nome", nome)
+				/*	Adiciona ao documento o par "email" -> 	email
+				 	O método append adiciona uma nova chave e seu valor ao Document de forma
+				 	 encadeda.																		*/
+				.append("email", email)
+				
+				/*	Adiciona ao documento o par "telefone" -> telefone.								*/
+				.append("telefone", tel)
+				
+				/*	Adiciona ao documento o par "dataNascimento" -> data.							*/
+				.append("dataNascimento", data);
+		
+		/*	Insere o documento recém criado na coleção do MongoDB chamada coleção. 
+			O método insertOne(Document) realiza a operação de inserção no banco.
+			Após essa linha, o documento estará persistido na base de dados (em disco
+			ou memória, dependendo da configuração).												*/
+		colecao.insertOne(doc);
+		
+		JOptionPane.showMessageDialog(this,
+				"Registro inserido com sucesso!",
+				"Sucesso",
+				JOptionPane.INFORMATION_MESSAGE); //Ícone azul de infomação (icone de sucesso).
+		
+		/*	Chama o método limparCampos(), que limpa os campos do formulário (nome, email,
+			telefone e data). Isso prepara a tela para um novo cadastro, deixando os campos
+			em branco.	*/
+		limparCampos(); 
+		
+		/*	Chama o método carregarRegistros("") passando uma String vazia como parâmetro. isso
+			faz com que todos os registros do banco de dados sejam carregados e exibidos na
+			tabela novamente, incluído o novo registro que acabou de ser inserido.					*/
+		carregarRegistros("");
 	}
-	 
+	/*		*/
 	private void atualizarRegistro(){
 		txtNome.setText("");
 	}
-	
+	/*		*/
 	private void excluirRegistro(){
 		txtNome.setText("");
 	}
-	
+	/*		*/
 	private void exportarDadosExcel(){
 		txtNome.setText("");
 	}
 	
 	
 
-	/* Sua Responsabilidade é estabelecer a conexão com o servidor MongoDB local,
-	 * selecionar o banco de dados correto e acessar a coleção onde os dados serão
-	 * armazenados. O escopo do metodo é private porque ele só será utilizado
-	 * internamente pela classe "RegistrationMongoApp"*/
+	/* 	Sua Responsabilidade é estabelecer a conexão com o servidor MongoDB local,
+	  	selecionar o banco de dados correto e acessar a coleção onde os dados serão
+	  	armazenados. O escopo do metodo é private porque ele só será utilizado
+	  	internamente pela classe "RegistrationMongoApp"		*/
 	private void conectarMongo() {
 
-		/* Cria uma instância do Cliente mongoDB utilizando a ARI padrão para conexão
-		 * local. "mongodb://localhost:27017" Indica que o servidor MongoDB está rodando
-		 * localmente na porta padrão 27017, sem autenticação ou parâmetros adicionais.
-		 * MongoClients.create(...) é um método estático que retorna uma implementação
-		 * de MongoClient, permitindo iniciar a comunicação com o servidor MongoDB.*/
+		/* 	Cria uma instância do Cliente mongoDB utilizando a ARI padrão para conexão
+			local. "mongodb://localhost:27017" Indica que o servidor MongoDB está rodando
+		 	localmente na porta padrão 27017, sem autenticação ou parâmetros adicionais.
+			MongoClients.create(...) é um método estático que retorna uma implementação
+			de MongoClient, permitindo iniciar a comunicação com o servidor MongoDB.	*/
 		mongoClient = MongoClients.create("mongodb://localhost:27017");
 
-		/* Seleciona (ou cria, se ainda não existir) o banco de dados chamado
-		 * "cadastro". O método 'getDatabase(String name)' retorna uma instância de
-		 * 'MongoDatabase', que permite executar operações como criar coleções,
-		 * consultar documentos, etc. No MongoDB o banco de dados é criado "sob demanda"
-		 * - ou seja, ele só será criado de fato, quando algum documento for inserido em
-		 * alguma coleção.*/
+		/* 	Seleciona (ou cria, se ainda não existir) o banco de dados chamado
+			"cadastro". O método 'getDatabase(String name)' retorna uma instância de
+		 	'MongoDatabase', que permite executar operações como criar coleções, consultar documentos, 
+		 	etc. No MongoDB o banco de dados é criado "sob demanda" - ou seja, ele só será criado de fato, 
+		 	quando algum documento for inserido em alguma coleção.		*/
 		database = mongoClient.getDatabase("cadastro");
 
-		/* Acessa (ou cria, quando não existir) a coleção chamada "pessoas" dentro do
-		 * banco "cadastro". Uma coleção no mongoDB é equivamente a uma "tabela" em
-		 * bancos relacionais */
+		/* 	Acessa (ou cria, quando não existir) a coleção chamada "pessoas" dentro do
+		  	banco "cadastro". Uma coleção no mongoDB é equivamente a uma "tabela" em bancos relacionais 		*/
 		colecao = database.getCollection("pessoas");
 
 	};
@@ -590,31 +659,28 @@ public class RegistrationMongoApp extends JFrame {
 		txtDataNascimento.setText("");
 	}; 
 
-	// Metodo principal da aplicação Java
-	// public: acessivel de qualquer lugar
-	// static: não depende de uma estância da classe para ser executado.
-	// void: não retorna nenhum valor.
-	// String[] args: parametro que permite a passagem de argumentos via linha de
-	// comando.
+	/* 	Metodo principal da aplicação Java
+	 	public: acessivel de qualquer lugar
+	 	static: não depende de uma estância da classe para ser executado.
+	 	void: não retorna nenhum valor.
+	 	String[] args: parametro que permite a passagem de argumentos via linha de comando. 	*/
 	public static void main(String[] args) {
 
-		// O SwingUtilities.invokelater é um método estático da classe SwingUtilities.
-		// Ele serve para garantir que a criação e manipulação de componentes Swing seja
-		// feita na Event Dispatch Thread (EDT), que é a thread segura para acesso à
-		// interface
-		// gráfica em java.
-		// Isso evita problemas de concorrência ou comportamento inesperado ao interagir
-		// com a GUI.
+		/* 	O SwingUtilities.invokelater é um método estático da classe SwingUtilities.
+		 	Ele serve para garantir que a criação e manipulação de componentes Swing seja
+		 	feita na Event Dispatch Thread (EDT), que é a thread segura para acesso à
+		 	interface
+		 	gráfica em java.
+		 	Isso evita problemas de concorrência ou comportamento inesperado ao interagir
+		 	com a GUI. 	*/
 		SwingUtilities.invokeLater(
 
-				// Expressão lambda que implementa a interface Runnable.
-				// O código dentro dessa lambda será executado assim que possível na EDT
+				/*	Expressão lambda que implementa a interface Runnable.
+					O código dentro dessa lambda será executado assim que possível na EDT	*/
 				() ->
 
-				// Cria uma nova instância da classe CadastroMondoApp() a janela principa
-				// da aplicação.
-				// O Construtor da classe inicializa a interface gráfica,
-				// conecta ao mongoDB e carrega os dados iniciais.
+				/* 	Cria uma nova instância da classe CadastroMondoApp() a janela principa da aplicação.
+				 	O Construtor da classe inicializa a interface gráfica, conecta ao mongoDB e carrega os dados iniciais.		*/
 				new RegistrationMongoApp().setVisible(true)
 
 		);
